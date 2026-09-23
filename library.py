@@ -2,18 +2,20 @@ class BookNotAvailableError(Exception):
     """raise an error when a book is already borrowed."""
     pass
 
+
 class BorrowLimitExceededError(Exception):
     """raise an error when member tries to borrow more than 3 books."""
     pass
+
 
 class Book:
     def __init__(self, title, author, isbn):
         self.title = title
         self.author = author
         self. isbn = isbn
-        self._is_available = True #private attribute for encapsulation
+        self._is_available = True  # private attribute for encapsulation
 
-    #getter to access priv attribute
+    # getter to access priv attribute
     @property
     def is_available(self):
         return self._is_available
@@ -25,7 +27,9 @@ class Book:
     def __str__(self):
         return f"{self.title} by {self.author}"
 
-#EBook INHERITS from Book
+# EBook INHERITS from Book
+
+
 class EBook(Book):
     def __init__(self, title, author, isbn, file_size, download_link):
         super().__init__(title, author, isbn)
@@ -40,11 +44,13 @@ class EBook(Book):
     def is_available(self):
         return True
 
+
 class Member:
     def __init__(self, name, member_id):
         self.name = name
         self.member_id = member_id
-        self._borrowed_books = [] #must encapsulate so external code wont break the only-3-books limit
+        # must encapsulate so external code wont break the only-3-books limit
+        self._borrowed_books = []
 
     @property
     def borrowed_books(self):
@@ -54,9 +60,10 @@ class Member:
         """returns (e.g. Member(name, ID))"""
         pass
 
+
 class Library:
     def __init__(self):
-        # using dict for faster searching by id or isbn 
+        # using dict for faster searching by id or isbn
         self.books = {}    # { 'isbn': BookObject }
         self.members = {}  # { 'member_id': MemberObject }
 
