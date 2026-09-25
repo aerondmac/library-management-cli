@@ -87,18 +87,24 @@ class Library:
             book = self.books[isbn]
 
             if len(member.borrowed_books) >= 3:
-                raise BorrowLimitExceededError("You cannot borrow more than 3 books!")
+                raise BorrowLimitExceededError(
+                    "You cannot borrow more than 3 books!")
             elif not book.is_available:
                 raise BookNotAvailableError("Book is already checked out!")
             else:
                 member.borrowed_books.append(book)
-                book.is_available = False
+                book._is_available = False
         else:
             print("Invalid ID or ISBN.")
 
     def return_book(self, member_id, isbn):
         """remove from member's list, then set book.is_available = True"""
-        pass
+        if member_id in self.members and isbn in self.books:
+            member = self.members[member_id]
+            book = self.books[isbn]
+
+            member.borrowed_books.remove(book)
+            book._is_available = True
 
     def save_to_json(self, filename="data.json"):
         """Convert the dictionaries to JSON format and write to file"""
