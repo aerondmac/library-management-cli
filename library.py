@@ -103,8 +103,13 @@ class Library:
             member = self.members[member_id]
             book = self.books[isbn]
 
-            member.borrowed_books.remove(book)
-            book._is_available = True
+            if book in member.borrowed_books:
+                member.borrowed_books.remove(book)
+                book._is_available = True
+            else:
+                print(f"Member {member.name} does not have this book.")
+        else:
+            print("Invalid member ID or ISBN.")
 
     def save_to_json(self, filename="data.json"):
         """Convert the dictionaries to JSON format and write to file"""
