@@ -68,12 +68,10 @@ class Library:
         self.members = {}  # { 'member_id': MemberObject }
 
     def add_book(self, book):
-        """adds book object to the self.books dict"""
-        pass
+        self.books[book.isbn] = book
 
     def register_member(self, member):
-        """adds member object to the self.members dict"""
-        pass
+        self.members[member.member_id] = member
 
     def borrow_book(self, member_id, isbn):
         """ 
