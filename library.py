@@ -1,10 +1,10 @@
 class BookNotAvailableError(Exception):
-    """raise an error when a book is already borrowed."""
+    """raise an error when a book is already borrowed"""
     pass
 
 
 class BorrowLimitExceededError(Exception):
-    """raise an error when member tries to borrow more than 3 books."""
+    """raise an error when member tries to borrow more than 3 books"""
     pass
 
 
@@ -73,7 +73,7 @@ class Library:
         self.books[book.isbn] = book
 
     def register_member(self, member):
-        """add member object to self.members dictionary."""
+        """add member object to self.members dictionary"""
         self.members[member.member_id] = member
 
     def borrow_book(self, member_id, isbn):
@@ -97,6 +97,24 @@ class Library:
                 book._is_available = False
         else:
             print("Invalid ID or ISBN.")
+
+    def list_available_books(self):
+        """returns a list of available books"""
+        available_books = []
+        for book in self.books.values():
+            if book.is_available:
+                available_books.append(book)
+        return available_books
+
+    def search_books(self, search):
+        """searches books by title or author"""
+        results = []
+        search_lowercase = search.lower()
+
+        for book in self.books.values():
+            if search_lowercase in book.title.lower() or search_lowercase in book.author.lower():
+                results.append(book)
+        return results
 
     def return_book(self, member_id, isbn):
         """remove from member's list, then set book.is_available = True"""
