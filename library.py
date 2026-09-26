@@ -22,7 +22,7 @@ class Book:
 
     def get_info(self):
         """returns formatted string with book details"""
-        pass
+        return f"{self.title} by {self.author}, ISBN: {self.isbn}, Available: {self.is_available}"
 
     def __str__(self):
         return f"{self.title} by {self.author}"
@@ -38,7 +38,8 @@ class EBook(Book):
 
     def get_info(self):
         """returns string that includes file size and dl link"""
-        pass
+        normal_info = super().get_info()
+        return f"{normal_info}, Size: {self.file_size}, Link: {self.download_link}"
 
     @property
     def is_available(self):
@@ -58,7 +59,7 @@ class Member:
 
     def __repr__(self):
         """returns (e.g. Member(name, ID))"""
-        pass
+        return f"Member({self.name}, {self.member_id})"
 
 
 class Library:
