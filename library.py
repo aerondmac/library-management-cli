@@ -68,25 +68,48 @@ class Library:
         self.members = {}  # { 'member_id': MemberObject }
 
     def add_book(self, book):
-        """adds book object to the self.books dict"""
-        pass
+        """add book object to self.books dictionary"""
+        self.books[book.isbn] = book
 
     def register_member(self, member):
-        """adds member object to the self.members dict"""
-        pass
+        """add member object to self.members dictionary."""
+        self.members[member.member_id] = member
 
     def borrow_book(self, member_id, isbn):
         """ 
         check if member exists and book exists
         check if len(member.borrowed_books) >= 3 if not, raise BorrowLimitExceededError
-        check if book.is_available == False if not, raise BookNotAvailableError
+        check if book.is_available == True if not, raise BookNotAvailableError
         if all true, add book to member's list then set book.is_available = False
         """
-        pass
+        if member_id in self.members and isbn in self.books:
+            member = self.members[member_id]
+            book = self.books[isbn]
+
+            if len(member.borrowed_books) >= 3:
+                raise BorrowLimitExceededError(
+                    "You cannot borrow more than 3 books!")
+            elif not book.is_available:
+                raise BookNotAvailableError("Book is already checked out!")
+            else:
+                member.borrowed_books.append(book)
+                book._is_available = False
+        else:
+            print("Invalid ID or ISBN.")
 
     def return_book(self, member_id, isbn):
         """remove from member's list, then set book.is_available = True"""
-        pass
+        if member_id in self.members and isbn in self.books:
+            member = self.members[member_id]
+            book = self.books[isbn]
+
+            if book in member.borrowed_books:
+                member.borrowed_books.remove(book)
+                book._is_available = True
+            else:
+                print(f"Member {member.name} does not have this book.")
+        else:
+            print("Invalid member ID or ISBN.")
 
     def save_to_json(self, filename="data.json"):
         """Convert the dictionaries to JSON format and write to file"""
