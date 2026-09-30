@@ -1,3 +1,7 @@
+import json
+import os
+
+
 class BookNotAvailableError(Exception):
     """raise an error when a book is already borrowed"""
     pass
@@ -132,8 +136,76 @@ class Library:
 
     def save_to_json(self, filename="data.json"):
         """Convert the dictionaries to JSON format and write to file"""
-        pass
+        data = {"books": [], "members": []}
+
+        # 1. Save Books and EBooks
+        for book in self.books.values():
+            if isinstance(book, EBook):
+                data["books"].append({
+                    "type": "EBook",
+                    "title": book.title,
+                    "author": book.author,
+                    "isbn": book.isbn,
+                    "file_size": book.file_size,
+                    "download_link": book.download_link
+                })
+            else:
+                data["books"].append({
+                    "type": "Book",
+                    "title": book.title,
+                    "author": book.author,
+                    "isbn": book.isbn,
+                    "is_available": book.is_available
+                })
+
+        # 2. Save Members
+        for member in self.members.values():
+            # Basic list of ISBNs using a standard loop
+            borrowed_isbns = []
+            for book in member.borrowed_books:
+                borrowed_isbns.append(book.isbn)
+
+            data["members"].append({
+                "name": member.name,
+                "member_id": member.member_id,
+                "borrowed_isbns": borrowed_isbns
+            })
+
+        # Write to file
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=4)
 
     def load_from_json(self, filename="data.json"):
         """Read from file and recreate the Book/EBook/Member objects"""
-        pass
+        try:
+            with open(filename, "r") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            print("Data file is not found.")
+            return
+
+        # Clear existing data
+        self.books = {}
+        self.members = {}
+
+        # 1. Load Books
+        for b_data in data["books"]:
+            if b_data["type"] == "EBook":
+                book = EBook(b_data["title"], b_data["author"], b_data["isbn"],
+                             b_data["file_size"], b_data["download_link"])
+            else:
+                book = Book(b_data["title"], b_data["author"], b_data["isbn"])
+                book._is_available = b_data["is_available"]
+
+            self.add_book(book)
+
+        # 2. Load Members
+        for m_data in data["members"]:
+            member = Member(m_data["name"], m_data["member_id"])
+
+            # Standard loop to reconnect the borrowed books
+            for isbn in m_data["borrowed_isbns"]:
+                book = self.books[isbn]
+                member.borrowed_books.append(book)
+
+            self.register_member(member)
