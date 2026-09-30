@@ -120,19 +120,45 @@ class Library:
                 results.append(book)
         return results
 
-    def return_book(self, member_id, isbn):
-        """remove from member's list, then set book.is_available = True"""
-        if member_id in self.members and isbn in self.books:
-            member = self.members[member_id]
-            book = self.books[isbn]
+    def return_book(self, member_id, isbn = None):
+        """
+        remove from member's list, then set book.is_available = True
+        if isbn is provided, return the book that has that isbn
+        if isbn not provided, return all books  
+        """
+        if member_id not in self.members:
+            print("Invalid member ID.")
+            return
 
+        member = self.members[member_id]
+
+        # Return all books
+        if isbn is None:
+            if len(member.borrowed_books) == 0:
+                print(f"member {member.name} has no books.")
+                return
+
+            # Mark all books as available
+            for book in member.borrowed_books:
+                book._is_available = True
+
+            # Clear member's borrowed book list
+            member.borrowed_books.clear()
+            print(f"Successfully returned all books for {member.name}")
+
+        # Return a single book
+        else:
+            if isbn not in self.books[isbn]:
+                print("Invalid ISBN.")
+                return
+
+            book = self.books[isbn]
             if book in member.borrowed_books:
                 member.borrowed_books.remove(book)
                 book._is_available = True
+                print(f"Succesfully returned {book.title}")
             else:
-                print(f"Member {member.name} does not have this book.")
-        else:
-            print("Invalid member ID or ISBN.")
+                print(f"{member.name} does not have this book")
 
     def save_to_json(self, filename="data.json"):
         """Convert the dictionaries to JSON format and write to file"""
