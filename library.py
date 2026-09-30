@@ -120,7 +120,7 @@ class Library:
                 results.append(book)
         return results
 
-    def return_book(self, member_id, isbn = None):
+    def return_book(self, member_id, isbn=None):
         """
         remove from member's list, then set book.is_available = True
         if isbn is provided, return the book that has that isbn
@@ -148,7 +148,7 @@ class Library:
 
         # Return a single book
         else:
-            if isbn not in self.books[isbn]:
+            if isbn not in self.books:
                 print("Invalid ISBN.")
                 return
 
