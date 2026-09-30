@@ -58,8 +58,12 @@ while True:
 
     elif choice == "4":
         member_id = input("Enter member ID: ")
-        isbn = input("Enter book ISBN: ")
-        lib.return_book(member_id, isbn)
+        isbn = input("Enter book ISBN (or press Enter key to return ALL books): ").strip()
+
+        if isbn == "":
+            lib.return_book(member_id)
+        else:
+            lib.return_book(member_id, isbn)
 
     elif choice == "5":
         available = lib.list_available_books()
